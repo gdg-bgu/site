@@ -58,8 +58,16 @@ export const authOptions: NextAuthOptions = {
       return session
     },
     async redirect({ url, baseUrl }) {
-      if (url.startsWith('/')) return `${baseUrl}${url}`
-      else if (new URL(url).origin === baseUrl) return url
+      try {
+        if (url.startsWith('/')) {
+          return new URL(url, baseUrl).toString()
+        }
+        if (new URL(url).origin === new URL(baseUrl).origin) {
+          return url
+        }
+      } catch {
+        // Fallback to baseUrl if URL parsing fails
+      }
       return baseUrl
     },
   },
