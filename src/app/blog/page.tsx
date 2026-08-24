@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { getSession } from '@/lib/auth'
 import { SiteNavbar } from '@/components/site-navbar'
 import { SiteFooter } from '@/components/site-footer'
 import { BlogExplorer } from '@/components/blog/blog-explorer'
@@ -20,6 +21,8 @@ export default async function BlogPage({
   const { category } = await searchParams
   const initialCategory = categories.includes(category as Category) ? (category as Category) : undefined
   const blogs = await publishedBlogs()
+  const session = await getSession()
+  const canEdit = Boolean(session?.user)
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -40,7 +43,7 @@ export default async function BlogPage({
         </section>
 
         <section className="mx-auto max-w-6xl px-5 py-12 lg:px-8 lg:py-16">
-          <BlogExplorer blogs={blogs} initialCategory={initialCategory} />
+          <BlogExplorer blogs={blogs} initialCategory={initialCategory} canEdit={canEdit} />
         </section>
       </main>
       <SiteFooter />

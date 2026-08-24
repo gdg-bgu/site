@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { getServerSession } from 'next-auth/next'
 import { cookies } from 'next/headers'
 import { authOptions } from '@/lib/auth-options'
@@ -10,7 +11,7 @@ export interface Session {
   user: Member
 }
 
-export async function getSession(): Promise<Session | null> {
+export const getSession = cache(async (): Promise<Session | null> => {
   // 1. Try NextAuth session
   try {
     const nextAuthSession = await getServerSession(authOptions)
@@ -39,7 +40,7 @@ export async function getSession(): Promise<Session | null> {
   } catch {
     return null
   }
-}
+})
 
 export async function createSession(email: string): Promise<boolean> {
   const member = await getMemberByEmail(email)

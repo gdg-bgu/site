@@ -149,15 +149,6 @@ function SidebarContent({ user, onNavigate }: { user?: Member | null; onNavigate
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={handleLogout}
-            disabled={isPending}
-            title="Log out"
-            className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
         </div>
       </div>
     </div>

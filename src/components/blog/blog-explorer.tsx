@@ -10,7 +10,15 @@ import { cn } from '@/lib/utils'
 
 type Filter = 'All' | Category
 
-export function BlogExplorer({ blogs, initialCategory }: { blogs: Blog[]; initialCategory?: Category }) {
+export function BlogExplorer({
+  blogs,
+  initialCategory,
+  canEdit = false,
+}: {
+  blogs: Blog[]
+  initialCategory?: Category
+  canEdit?: boolean
+}) {
   const [query, setQuery] = useState('')
   const [active, setActive] = useState<Filter>(initialCategory ?? 'All')
 
@@ -82,7 +90,7 @@ export function BlogExplorer({ blogs, initialCategory }: { blogs: Blog[]; initia
       {filtered.length > 0 ? (
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((blog) => (
-            <BlogCard key={blog.slug} blog={blog} />
+            <BlogCard key={blog.slug} blog={blog} canEdit={canEdit} />
           ))}
         </div>
       ) : (

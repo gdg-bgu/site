@@ -1,8 +1,9 @@
 import { FileText, CheckCircle2, FileEdit, Eye, TrendingUp } from 'lucide-react'
 import { getAllBlogs } from '@/lib/blog-db'
+import type { Blog } from '@/lib/blog-data'
 
-export async function StatCards() {
-  const blogs = await getAllBlogs()
+export async function StatCards({ blogs: initialBlogs }: { blogs?: Blog[] } = {}) {
+  const blogs = initialBlogs || (await getAllBlogs())
   const total = blogs.length
   const published = blogs.filter((b) => b.status === 'Published').length
   const drafts = blogs.filter((b) => b.status === 'Draft').length

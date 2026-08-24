@@ -1,17 +1,21 @@
 import 'server-only'
+import { cache } from 'react'
 import { connectToDatabase } from '@/lib/mongodb'
 import { MemberModel } from '@/lib/models/Member'
 import { INITIAL_MEMBER_WHITELIST, Member, MemberRole } from '@/lib/members'
 
+let isSeeded = false
+
 async function ensureMembersSeeded() {
+  if (isSeeded) return
   const db = await connectToDatabase()
   if (!db) return
   try {
     for (const m of INITIAL_MEMBER_WHITELIST) {
       await MemberModel.findOneAndUpdate(
-        { id: m.id },
+        { email: m.email.toLowerCase() },
         {
-          $set: {
+          $setOnInsert: {
             id: m.id,
             name: m.name,
             email: m.email.toLowerCase(),
@@ -21,15 +25,16 @@ async function ensureMembersSeeded() {
             isAllowed: m.isAllowed ?? true,
           },
         },
-        { upsert: true, returnDocument: 'after' }
+        { upsert: true }
       )
     }
+    isSeeded = true
   } catch (err) {
     console.error('Error seeding members:', err)
   }
 }
 
-export async function getAllMembers(): Promise<Member[]> {
+export const getAllMembers = cache(async (): Promise<Member[]> => {
   const db = await connectToDatabase()
   if (db) {
     await ensureMembersSeeded()
@@ -45,9 +50,9 @@ export async function getAllMembers(): Promise<Member[]> {
     }))
   }
   return INITIAL_MEMBER_WHITELIST
-}
+})
 
-export async function getMemberByEmail(email: string | null | undefined): Promise<Member | null> {
+export const getMemberByEmail = cache(async (email: string | null | undefined): Promise<Member | null> => {
   if (!email) return null
   const normalizedEmail = email.trim().toLowerCase()
 
@@ -55,7 +60,8 @@ export async function getMemberByEmail(email: string | null | undefined): Promis
   if (db) {
     await ensureMembersSeeded()
     const memberDoc = await MemberModel.findOne({ email: normalizedEmail }).lean()
-    if (memberDoc && memberDoc.isAllowed !== false) {
+    if (memberDoc) {
+      if (memberDoc.isAllowed === false) return null
       return {
         id: memberDoc.id || (memberDoc._id as any).toString(),
         name: memberDoc.name,
@@ -66,11 +72,15 @@ export async function getMemberByEmail(email: string | null | undefined): Promis
         isAllowed: memberDoc.isAllowed ?? true,
       }
     }
-    return null
   }
 
-  return INITIAL_MEMBER_WHITELIST.find((m) => m.email.toLowerCase() === normalizedEmail) || null
-}
+  const staticMember = INITIAL_MEMBER_WHITELIST.find((m) => m.email.toLowerCase() === normalizedEmail)
+  if (staticMember && staticMember.isAllowed !== false) {
+    return staticMember
+  }
+
+  return null
+})
 
 export async function isAllowedMember(email: string | null | undefined): Promise<boolean> {
   const member = await getMemberByEmail(email)

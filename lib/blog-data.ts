@@ -7,6 +7,8 @@ export type Author = {
   role: string
   initials: string
   color: string
+  avatar?: string
+  image?: string
 }
 
 export type Section = {
@@ -28,6 +30,8 @@ export type Blog = {
   views: number
   featured?: boolean
   content: Section[]
+  contentHtml?: string
+  contentMdx?: string
 }
 
 export const categories: Category[] = [

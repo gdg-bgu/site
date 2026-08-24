@@ -95,7 +95,6 @@ function LoginForm() {
       )}
 
       <div className="space-y-4">
-        {/* Google OAuth Button */}
         <Button
           type="button"
           disabled={isPending}
@@ -105,41 +104,6 @@ function LoginForm() {
           <GoogleIcon />
           <span>Sign in with Google (BGU Account)</span>
         </Button>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Email Address
-            </label>
-            <div className="relative">
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter Your BGU email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isPending}
-                className="h-11 px-4 rounded-xl border-border bg-card shadow-sm transition-all focus-visible:ring-2 focus-visible:ring-primary"
-              />
-            </div>
-          </div>
-
-          <Button
-            type="submit"
-            disabled={isPending}
-            className="w-full h-11 rounded-xl font-semibold gap-2 shadow-md transition-all hover:shadow-lg"
-          >
-            {isPending ? (
-              <span>Authenticating...</span>
-            ) : (
-              <>
-                <span>Sign In to Admin Console</span>
-                <ArrowRight className="w-4 h-4" />
-              </>
-            )}
-          </Button>
-        </form>
       </div>
     </div>
   )

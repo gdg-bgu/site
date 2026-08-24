@@ -156,6 +156,12 @@ export function BlogTable({
                           View
                         </Link>
                       </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href={`/admin/blogs/edit/${blog.slug}`}>
+                          <Pencil style={{ width: 16, height: 16 }} />
+                          Edit
+                        </Link>
+                      </DropdownMenuItem>
                       {blog.status !== 'Published' && (
                         <DropdownMenuItem
                           onClick={() => {

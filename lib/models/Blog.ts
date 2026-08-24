@@ -5,15 +5,19 @@ export interface IBlogDocument extends Document {
   slug: string
   title: string
   description: string
+  excerpt?: string
   cover: string
+  coverImage?: string
   category: Category
-  author: Author
+  author: Author | string
   date: string
   readingTime: number
   status: BlogStatus
   views: number
   featured?: boolean
   content: Section[]
+  contentHtml?: string
+  contentMdx?: string
   createdAt: Date
   updatedAt: Date
 }
@@ -42,23 +46,27 @@ const BlogSchema: Schema = new Schema<IBlogDocument>(
     slug: { type: String, required: true, unique: true, index: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
+    excerpt: { type: String },
     cover: { type: String, required: true },
+    coverImage: { type: String },
     category: {
       type: String,
       enum: ['Web Development', 'AI/ML', 'Cloud', 'Android', 'Events'],
       required: true,
     },
-    author: { type: AuthorSchema, required: true },
+    author: { type: Schema.Types.Mixed, required: true },
     date: { type: String, required: true },
     readingTime: { type: Number, required: true, default: 3 },
     status: {
       type: String,
-      enum: ['Published', 'Draft', 'Archived'],
+      enum: ['Published', 'Draft', 'Archived', 'published', 'draft'],
       default: 'Published',
     },
     views: { type: Number, default: 0 },
     featured: { type: Boolean, default: false },
     content: [SectionSchema],
+    contentHtml: { type: String },
+    contentMdx: { type: String },
   },
   {
     timestamps: true,

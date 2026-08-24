@@ -69,7 +69,7 @@ export default async function AdminDashboardPage() {
         </div>
       </div>
 
-      <StatCards />
+      <StatCards blogs={allBlogs} />
 
       <MemberWhitelistManager
         members={members}
