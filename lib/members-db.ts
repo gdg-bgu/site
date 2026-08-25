@@ -2,7 +2,7 @@ import 'server-only'
 import { cache } from 'react'
 import { connectToDatabase } from '@/lib/mongodb'
 import { MemberModel } from '@/lib/models/Member'
-import { INITIAL_MEMBER_WHITELIST, Member, MemberRole } from '@/lib/members'
+import { INITIAL_MEMBER_WHITELIST, Member, MemberRole, sortMembers } from '@/lib/members'
 
 let isSeeded = false
 
@@ -39,7 +39,7 @@ export const getAllMembers = cache(async (): Promise<Member[]> => {
   if (db) {
     await ensureMembersSeeded()
     const members = await MemberModel.find({ isAllowed: { $ne: false } }).lean()
-    return members.map((m) => ({
+    const mapped = members.map((m) => ({
       id: m.id || (m._id as any).toString(),
       name: m.name,
       email: m.email,
@@ -48,8 +48,9 @@ export const getAllMembers = cache(async (): Promise<Member[]> => {
       avatar: m.avatar,
       isAllowed: m.isAllowed ?? true,
     }))
+    return sortMembers(mapped)
   }
-  return INITIAL_MEMBER_WHITELIST
+  return sortMembers(INITIAL_MEMBER_WHITELIST)
 })
 
 export const getMemberByEmail = cache(async (email: string | null | undefined): Promise<Member | null> => {
