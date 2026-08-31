@@ -182,6 +182,7 @@ export function AdminShell({ user, children }: { user?: Member | null; children:
         <header className="glass-strong sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border px-4 lg:px-8">
           <button
             type="button"
+            suppressHydrationWarning
             onClick={() => setOpen(true)}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground hover:bg-accent lg:hidden"
             aria-label="Open menu"

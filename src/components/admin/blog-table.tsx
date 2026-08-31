@@ -93,6 +93,7 @@ export function BlogTable({
           <button
             key={tab.value}
             type="button"
+            suppressHydrationWarning
             onClick={() => setStatus(tab.value)}
             aria-pressed={status === tab.value}
             className={cn(

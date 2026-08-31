@@ -36,20 +36,12 @@ export const INITIAL_MEMBER_WHITELIST: Member[] = [
     avatar: '/team/suvrajit.webp',
   },
   {
-    id: 's-karthick',
-    name: 'S. KARTHICK',
-    email: 's.karthick25ug101@bgu.ac.in',
-    role: 'Lead Video Editor',
+    id: 'ayush-d-panigrahi',
+    name: 'Ayush D Panigrahi',
+    email: 'ayush.panigrahi28@bgu.ac.in',
+    role: 'Event Management Lead',
     systemRole: 'lead',
-    avatar: '/team/karthick.webp',
-  },
-  {
-    id: 'ayush-mall',
-    name: 'Ayush Mall',
-    email: 'ayush.mall25ug107@bgu.ac.in',
-    role: 'Design & Content Associate',
-    systemRole: 'associate',
-    avatar: '/team/ayush-mall.jpeg',
+    avatar: '/team/ayush-panigrahi.webp',
   },
   {
     id: 'shreya-mohanta',
@@ -60,20 +52,28 @@ export const INITIAL_MEMBER_WHITELIST: Member[] = [
     avatar: '/team/shreya-mohanta.webp',
   },
   {
-    id: 'ayush-d-panigrahi',
-    name: 'Ayush D Panigrahi',
-    email: 'ayush.panigrahi28@bgu.ac.in',
-    role: 'Event Management Lead',
-    systemRole: 'lead',
-    avatar: '/team/ayush-panigrahi.webp',
-  },
-  {
     id: 'aryan-panda',
     name: 'Aryan Panda',
     email: 'aryan.panda28@bgu.ac.in',
     role: 'Outreach & Growth Lead',
     systemRole: 'lead',
     avatar: '/team/aryan.webp',
+  },
+  {
+    id: 's-karthick',
+    name: 'S. KARTHICK',
+    email: 's.karthick25ug101@bgu.ac.in',
+    role: 'Lead Video Editor',
+    systemRole: 'lead',
+    avatar: '/team/karthick.webp',
+  },
+  {
+    id: 't-pushkar-raj',
+    name: 'Pushkar Raj',
+    email: 't.raj25ug107@bgu.ac.in',
+    role: 'Technical Associate',
+    systemRole: 'associate',
+    avatar: '/team/pushkar.jpeg',
   },
   {
     id: 'shreya-mohapatra',
@@ -84,19 +84,33 @@ export const INITIAL_MEMBER_WHITELIST: Member[] = [
     avatar: '/team/shreya-mohapatra.jpeg',
   },
   {
-    id: 't-pushkar-raj',
-    name: 'Pushkar Raj',
-    email: 't.raj25ug107@bgu.ac.in',
-    role: 'Technical Associate',
+    id: 'ayush-mall',
+    name: 'Ayush Mall',
+    email: 'ayush.mall25ug107@bgu.ac.in',
+    role: 'Design & Content Associate',
     systemRole: 'associate',
-    avatar: '/team/pushkar.jpeg',
+    avatar: '/team/ayush-mall.jpeg',
   },
 ]
 
 export const MEMBER_WHITELIST = INITIAL_MEMBER_WHITELIST
+
+export function sortMembers(members: Member[]): Member[] {
+  const getRank = (m: Member) => {
+    const idx = INITIAL_MEMBER_WHITELIST.findIndex(
+      (init) =>
+        init.id === m.id ||
+        init.email.toLowerCase() === m.email.toLowerCase()
+    )
+    return idx !== -1 ? idx : 999
+  }
+
+  return [...members].sort((a, b) => getRank(a) - getRank(b))
+}
 
 export function isAllowedMemberSync(email: string | null | undefined): boolean {
   if (!email) return false
   const normalizedEmail = email.trim().toLowerCase()
   return INITIAL_MEMBER_WHITELIST.some((m) => m.email.toLowerCase() === normalizedEmail)
 }
+
