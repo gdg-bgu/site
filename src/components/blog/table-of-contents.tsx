@@ -1,10 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import type { Section } from '@/lib/blog-data'
 import { cn } from '@/lib/utils'
 
-export function TableOfContents({ sections }: { sections: Section[] }) {
+export function TableOfContents({ sections }: { sections: { id: string; heading: string }[] }) {
   const [activeId, setActiveId] = useState(sections[0]?.id ?? '')
 
   useEffect(() => {

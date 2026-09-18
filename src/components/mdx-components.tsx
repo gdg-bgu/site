@@ -62,7 +62,7 @@ export const mdxComponents = {
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1
       className={cn(
-        'mt-10 mb-4 text-balance text-3xl font-bold tracking-tight text-foreground lg:text-4xl',
+        'mt-10 mb-4 text-balance text-3xl font-bold tracking-tight text-foreground lg:text-4xl scroll-mt-24',
         className
       )}
       {...props}
@@ -71,7 +71,7 @@ export const mdxComponents = {
   h2: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h2
       className={cn(
-        'mt-10 mb-4 text-balance text-2xl font-semibold tracking-tight text-foreground border-b border-border/50 pb-2.5',
+        'mt-10 mb-4 text-balance text-2xl font-semibold tracking-tight text-foreground border-b border-border/50 pb-2.5 scroll-mt-24',
         className
       )}
       {...props}
@@ -80,14 +80,14 @@ export const mdxComponents = {
   h3: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h3
       className={cn(
-        'mt-8 mb-3 text-balance text-xl font-semibold tracking-tight text-foreground',
+        'mt-8 mb-3 text-balance text-xl font-semibold tracking-tight text-foreground scroll-mt-24',
         className
       )}
       {...props}
     />
   ),
   p: ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p className={cn('mt-4 text-[17px] leading-8 text-foreground/85', className)} {...props} />
+    <p className={cn('mt-4 text-[17px] leading-8 text-foreground/85 break-words [overflow-wrap:anywhere]', className)} {...props} />
   ),
   a: ({ className, href = '#', ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
     const isInternal = href.startsWith('/') || href.startsWith('#')
@@ -95,7 +95,7 @@ export const mdxComponents = {
       return (
         <Link
           href={href}
-          className={cn('font-medium text-primary underline underline-offset-4 hover:opacity-80 transition-opacity', className)}
+          className={cn('font-medium text-primary underline underline-offset-4 hover:opacity-80 transition-opacity break-words', className)}
           {...props}
         />
       )
@@ -105,21 +105,21 @@ export const mdxComponents = {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className={cn('font-medium text-primary underline underline-offset-4 hover:opacity-80 transition-opacity', className)}
+        className={cn('font-medium text-primary underline underline-offset-4 hover:opacity-80 transition-opacity break-words', className)}
         {...props}
       />
     )
   },
   ul: ({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) => (
-    <ul className={cn('my-5 list-disc pl-6 text-[17px] leading-8 text-foreground/85 space-y-1.5', className)} {...props} />
+    <ul className={cn('my-5 list-disc pl-6 text-[17px] leading-8 text-foreground/85 space-y-1.5 break-words [overflow-wrap:anywhere]', className)} {...props} />
   ),
   ol: ({ className, ...props }: React.HTMLAttributes<HTMLOListElement>) => (
-    <ol className={cn('my-5 list-decimal pl-6 text-[17px] leading-8 text-foreground/85 space-y-1.5', className)} {...props} />
+    <ol className={cn('my-5 list-decimal pl-6 text-[17px] leading-8 text-foreground/85 space-y-1.5 break-words [overflow-wrap:anywhere]', className)} {...props} />
   ),
   blockquote: ({ className, ...props }: React.HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote
       className={cn(
-        'my-6 border-l-4 border-primary/80 pl-5 italic text-foreground/90 font-serif text-lg bg-secondary/30 py-3 pr-4 rounded-r-xl',
+        'my-6 border-l-4 border-primary/80 pl-5 italic text-foreground/90 font-serif text-lg bg-secondary/30 py-3 pr-4 rounded-r-xl break-words [overflow-wrap:anywhere]',
         className
       )}
       {...props}
