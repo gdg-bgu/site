@@ -86,6 +86,11 @@ export const getBlog = cache(async (slug: string): Promise<Blog | null> => {
     if (doc) {
       // Increment views count asynchronously in background
       BlogModel.updateOne({ slug }, { $inc: { views: 1 } }).catch(() => {})
+
+      const rawHtml = doc.contentHtml || (Array.isArray(doc.content) ? doc.content.flatMap((s: any) => s.body || []).join('') : undefined)
+      const cleanHtml = rawHtml ? rawHtml.replace(/&nbsp;/g, ' ').replace(/\u00A0/g, ' ') : undefined
+      const cleanMdx = doc.contentMdx ? doc.contentMdx.replace(/&nbsp;/g, ' ').replace(/\u00A0/g, ' ') : undefined
+
       return {
         slug: doc.slug,
         title: doc.title,
@@ -99,8 +104,8 @@ export const getBlog = cache(async (slug: string): Promise<Blog | null> => {
         views: (doc.views || 0) + 1,
         featured: doc.featured || false,
         content: doc.content || [],
-        contentHtml: doc.contentHtml || (Array.isArray(doc.content) ? doc.content.flatMap((s: any) => s.body || []).join('') : undefined),
-        contentMdx: doc.contentMdx,
+        contentHtml: cleanHtml,
+        contentMdx: cleanMdx,
       }
     }
     return null

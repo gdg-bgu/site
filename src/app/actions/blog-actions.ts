@@ -16,6 +16,30 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, '')
 }
 
+function cleanText(text: string) {
+  return text.replace(/&nbsp;/g, ' ').replace(/\u00A0/g, ' ')
+}
+
+function extractSectionsFromContent(content: string, fallbackDescription: string) {
+  const htmlHeadings = [...content.matchAll(/<h([23])[^>]*>(.*?)<\/h\1>/gi)]
+  if (htmlHeadings.length >= 2) {
+    return htmlHeadings.map((m, idx) => {
+      const heading = m[2].replace(/<[^>]+>/g, '').trim()
+      const id = slugify(heading) || `section-${idx + 1}`
+      return { id, heading, body: [] }
+    })
+  }
+
+  const paragraphs = content.split('\n\n').filter(Boolean)
+  return [
+    {
+      id: 'section-1',
+      heading: 'Overview',
+      body: paragraphs.length > 0 ? paragraphs : [fallbackDescription],
+    },
+  ]
+}
+
 export async function createBlogAction(formData: FormData) {
   const session = await getSession()
   if (!session?.user) {
@@ -29,7 +53,8 @@ export async function createBlogAction(formData: FormData) {
   const rawStatus = formData.get('status')?.toString()?.toLowerCase()
   const status: BlogStatus = rawStatus === 'draft' ? 'Draft' : 'Published'
   const featured = formData.get('featured') === 'true' || formData.get('featured') === 'on'
-  const contentBody = formData.get('content')?.toString()?.trim() || ''
+  const rawContentBody = formData.get('content')?.toString()?.trim() || ''
+  const contentBody = cleanText(rawContentBody)
 
   if (!title || !description || !category) {
     return { error: 'Title, description, and category are required.' }
@@ -48,14 +73,7 @@ export async function createBlogAction(formData: FormData) {
     slug = `${baseSlug}-${count++}`
   }
 
-  const paragraphs = contentBody.split('\n\n').filter(Boolean)
-  const sections = [
-    {
-      id: 'section-1',
-      heading: 'Overview',
-      body: paragraphs.length > 0 ? paragraphs : [description],
-    },
-  ]
+  const sections = extractSectionsFromContent(contentBody, description)
 
   const wordCount = contentBody.split(/\s+/).filter(Boolean).length
   const readingTime = Math.max(1, Math.ceil(wordCount / 200))
@@ -165,7 +183,8 @@ export async function updateBlogAction(originalSlug: string, formData: FormData)
   const cover = formData.get('cover')?.toString()?.trim() || '/placeholder.svg'
   const rawStatus = formData.get('status')?.toString()?.toLowerCase()
   const status: BlogStatus = rawStatus === 'draft' ? 'Draft' : 'Published'
-  const contentBody = formData.get('content')?.toString()?.trim() || ''
+  const rawContentBody = formData.get('content')?.toString()?.trim() || ''
+  const contentBody = cleanText(rawContentBody)
 
   if (!title || !description || !category) {
     return { error: 'Title, description, and category are required.' }
@@ -176,19 +195,13 @@ export async function updateBlogAction(originalSlug: string, formData: FormData)
     return { error: 'Database connection error. Please check MONGODB_URI.' }
   }
 
-  const paragraphs = contentBody.split('\n\n').filter(Boolean)
-  const sections = [
-    {
-      id: 'section-1',
-      heading: 'Overview',
-      body: paragraphs.length > 0 ? paragraphs : [description],
-    },
-  ]
+  const sections = extractSectionsFromContent(contentBody, description)
 
   const wordCount = contentBody.split(/\s+/).filter(Boolean).length
   const readingTime = Math.max(1, Math.ceil(wordCount / 200))
 
-  const contentMdx = formData.get('contentMdx')?.toString()?.trim() || contentBody
+  const rawMdx = formData.get('contentMdx')?.toString()?.trim() || contentBody
+  const contentMdx = cleanText(rawMdx)
 
   try {
     const existing = await BlogModel.findOne({ slug: originalSlug })
